@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Employee List o Lista de empleados</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Contrato</th>
+    </tr>
+    <tr th:each="employee:${employee}">
+        <td th:text="${employee.id}"></td>
+        <td th:text="${employee.firstName}"></td>
+        <td th:text="${employee.lastName}"></td>
+
+        <td>
+            <table>
+                <tr th:each="contract:${employee.contracts}">
+                    <td th:text="${contract.id}">123</td>
+                    <td th:text="${contract.initDate}">Jhon</td>
+                </tr>
+            </table>
+        </td>
+
+    </tr>
+</table>
+</body>
+</html>
