@@ -38,7 +38,7 @@ public class CategoryServiceImplTest {
 
     @Test
     public void testGetCategories() throws Exception {
-        List<Category> result = categoryServiceImpl.getCategories();
+        List<Category> result = categoryServiceImpl.findAll();
         Assert.assertEquals(categorySet, result);
         verify(categoryRepository, times(1)).findAll();
     }
