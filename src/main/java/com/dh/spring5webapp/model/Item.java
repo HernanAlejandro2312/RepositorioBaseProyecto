@@ -8,7 +8,8 @@ import javax.persistence.OneToOne;
 public class Item extends ModelBase {
     private String name;
     private String code;
-    @OneToOne(optional = false)
+    // targetEntity especifica el dueño de la relacion
+    @OneToOne(targetEntity = SubCategory.class)
     private SubCategory subCategory;
 
     public String getName() {

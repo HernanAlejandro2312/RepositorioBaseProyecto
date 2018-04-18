@@ -10,4 +10,6 @@ public interface GenericService<T> {
     List<T> findAll();
 
     T findById(Long id);
+
+    T save(T model);
 }

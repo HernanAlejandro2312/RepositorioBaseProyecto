@@ -36,5 +36,10 @@ public abstract class GenericServiceImpl<T> implements GenericService<T> {
         return optional.get();
     }
 
+    @Override
+    public T save(T model) {
+        return getRepository().save(model);
+    }
+
     protected abstract CrudRepository<T, Long> getRepository();
 }
