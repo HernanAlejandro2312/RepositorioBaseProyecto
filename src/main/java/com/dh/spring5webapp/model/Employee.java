@@ -13,7 +13,7 @@ public class Employee extends ModelBase {
     private String firstName;
     private String lastName;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Set<Contract> contracts = new HashSet<>();
 
     public String getFirstName() {

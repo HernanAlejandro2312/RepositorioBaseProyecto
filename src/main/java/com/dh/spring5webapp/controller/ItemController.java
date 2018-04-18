@@ -4,27 +4,23 @@
 
 package com.dh.spring5webapp.controller;
 
-import com.dh.spring5webapp.exceptions.NotFoundException;
+import com.dh.spring5webapp.command.ItemCommand;
 import com.dh.spring5webapp.model.Item;
-import com.dh.spring5webapp.model.SubCategory;
 import com.dh.spring5webapp.services.ItemService;
 import com.dh.spring5webapp.services.SubCategoryService;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-@RequestMapping("/items")
+@Path("/items")
+@Produces("application/json")
+@CrossOrigin
 public class ItemController {
     private ItemService service;
     private SubCategoryService subCategoryService;
@@ -34,63 +30,68 @@ public class ItemController {
         this.subCategoryService = subCategoryService;
     }
 
-    @RequestMapping
-    public String getItems(Model model) {
-        model.addAttribute("items", service.findAll());
-        return "items";
+    @GET
+    public Response getItems() {
+        List<ItemCommand> items = new ArrayList<>();
+        service.findAll().forEach(item -> {
+            ItemCommand itemCommand = new ItemCommand(item);
+            items.add(itemCommand);
+        });
+        Response.ResponseBuilder responseBuilder = Response.ok(items);
+        addCorsHeader(responseBuilder);
+        return responseBuilder.build();
     }
 
-    @RequestMapping("/{id}")
-    public String getItemsById(@PathVariable("id") @NotNull Long id, Model model) {
-        model.addAttribute("item", service.findById(id));
-        return "item";
+    @GET
+    @Path("/{id}")
+    public Response getItemsById(@PathParam("id") @NotNull Long id) {
+        Item item = service.findById(id);
+        Response.ResponseBuilder responseBuilder = Response.ok(item);
+        addCorsHeader(responseBuilder);
+        return responseBuilder.build();
     }
 
-    @RequestMapping("/new")
-    public String newItem(Model model, Item item) {
-        Item newItem = new Item();
-        newItem.setSubCategory(new SubCategory());
-        model.addAttribute("item", newItem);
-        model.addAttribute("subCategories", subCategoryService.findAll());
-        return "itemForm";
+    @POST
+    public Response saveItem(ItemCommand item) {
+        Item model = item.toDomain();
+        model.setSubCategory(subCategoryService.findById(item.getSubCategoryId()));
+        Item itemPersisted = service.save(model);
+        Response.ResponseBuilder responseBuilder = Response.ok(itemPersisted);
+        addCorsHeader(responseBuilder);
+        return responseBuilder.build();
     }
 
-    @PostMapping
-    public String saveItem(Model model, Item item) {
+    @PUT
+    public Response updateItem(Item item) {
         Item itemPersisted = service.save(item);
-        model.addAttribute("item", itemPersisted);
-        return "redirect:/items/" + itemPersisted.getId();
+        Response.ResponseBuilder responseBuilder = Response.ok(itemPersisted);
+        addCorsHeader(responseBuilder);
+        return responseBuilder.build();
     }
 
-    @RequestMapping("/update/{id}")
-    public String updateItem(Model model, @PathVariable String id) {
-        model.addAttribute("item", service.findById(Long.valueOf(id)));
-        model.addAttribute("subCategories", subCategoryService.findAll());
-        return "itemForm";
-    }
-
-    @RequestMapping(value = "/delete/{id}")
-    public String deleteItem(Model model, @PathVariable String id) {
+    @DELETE
+    @Path("/delete/{id}")
+    public Response deleteItem(@PathParam("id") String id) {
         service.deleteById(Long.valueOf(id));
-        return "redirect:/items/";
+        Response.ResponseBuilder responseBuilder = Response.ok();
+        addCorsHeader(responseBuilder);
+        return responseBuilder.build();
     }
 
-    @RequestMapping(value = "/{id}/image")
-    public String showUploadItemImageForm(Model model, @PathVariable String id) {
-        Item itemPersisted = service.findById(Long.valueOf(id));
-        model.addAttribute("item", itemPersisted);
-        return "uploadItemImageForm";
-    }
-
-    @PostMapping("/{id}/image")
-    public String potImage(Model model, @PathVariable String id, @RequestParam("imagefile") MultipartFile file) {
+/*
+    @POST
+    @Path("/{id}/image")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response potImage(@PathParam("id") String id, @RequestParam("imagefile") MultipartFile file) {
         service.saveImage(Long.valueOf(id), file);
 
         model.addAttribute("item", service.findById(Long.valueOf(id)));
         model.addAttribute("subCategories", subCategoryService.findAll());
         return "redirect:/items/update/{id}";
     }
+*/
 
+/*
     @GetMapping("/{id}/readimage")
     public void renderImageFromDB(@PathVariable String id, HttpServletResponse response) throws IOException {
         Item itemPersisted = service.findById(Long.valueOf(id));
@@ -107,14 +108,13 @@ public class ItemController {
             IOUtils.copy(is, response.getOutputStream());
         }
     }
+*/
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public ModelAndView handleNotFound(Exception e) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("error");
-        modelAndView.addObject("exception", e);
-        return modelAndView;
+    private void addCorsHeader(Response.ResponseBuilder responseBuilder) {
+        responseBuilder.header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Access-Control-Allow-Headers",
+                        "Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Origin, Accept, Authorization, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     }
-
 }    

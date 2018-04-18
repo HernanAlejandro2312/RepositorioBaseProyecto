@@ -5,11 +5,14 @@
 package com.dh.spring5webapp.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
 @Controller
 public class IndexController {
-    @RequestMapping({"", "/", "/index"})
+    @GET
+    @Path("/{\"\" | / | /index}")
     public String getIndexPage() {
         return "index";
     }
