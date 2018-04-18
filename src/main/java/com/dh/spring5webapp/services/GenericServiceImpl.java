@@ -4,6 +4,7 @@
 
 package com.dh.spring5webapp.services;
 
+import com.dh.spring5webapp.exceptions.NotFoundException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +31,7 @@ public abstract class GenericServiceImpl<T> implements GenericService<T> {
             String typeName = (((ParameterizedType) getClass()
                     .getGenericSuperclass()).getActualTypeArguments()[0]).getTypeName();
             typeName = typeName.substring(typeName.lastIndexOf(".") + 1);
-            throw new RuntimeException(
-                    typeName + " NotFound");
+            throw new NotFoundException(typeName + " id:" + id + " Not Found");
         }
         return optional.get();
     }
