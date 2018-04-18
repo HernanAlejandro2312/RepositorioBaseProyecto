@@ -40,9 +40,8 @@ public class CategoryControllerTest {
         String result = categoryController.getCategories(null, model);
         String expectedView = "categories";
         assertEquals(expectedView, result);
-        assertEquals(expectedView, expectedView);
         verify(categoryService, times(1)).find(any());
-        verify(model, times(1)).addAttribute(eq(expectedView), eq(categoryList));
+        verify(model, times(1)).addAttribute(expectedView, categoryList);
 
         verify(model, times(1)).addAttribute(eq("categories"), argumentCaptor.capture());
         List<Category> capturedCategories = argumentCaptor.getValue();
