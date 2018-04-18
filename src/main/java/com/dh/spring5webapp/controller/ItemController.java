@@ -61,4 +61,11 @@ public class ItemController {
         model.addAttribute("subCategories", subCategoryService.findAll());
         return "itemForm";
     }
+
+    @RequestMapping(value = "/delete/{id}")
+    public String deleteItem(Model model, @PathVariable String id) {
+        service.deleteById(Long.valueOf(id));
+        return "redirect:/items/";
+    }
+
 }    

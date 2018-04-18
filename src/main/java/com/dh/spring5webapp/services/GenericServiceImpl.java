@@ -41,5 +41,10 @@ public abstract class GenericServiceImpl<T> implements GenericService<T> {
         return getRepository().save(model);
     }
 
+    @Override
+    public void deleteById(Long id) {
+        getRepository().deleteById(id);
+    }
+
     protected abstract CrudRepository<T, Long> getRepository();
 }

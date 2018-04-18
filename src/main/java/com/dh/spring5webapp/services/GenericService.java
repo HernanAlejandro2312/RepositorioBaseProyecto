@@ -12,4 +12,6 @@ public interface GenericService<T> {
     T findById(Long id);
 
     T save(T model);
+
+    void deleteById(Long id);
 }
