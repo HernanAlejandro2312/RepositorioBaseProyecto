@@ -8,15 +8,17 @@ import com.dh.spring5webapp.model.Item;
 import com.dh.spring5webapp.model.SubCategory;
 import com.dh.spring5webapp.services.ItemService;
 import com.dh.spring5webapp.services.SubCategoryService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Controller
 @RequestMapping("/items")
@@ -84,6 +86,23 @@ public class ItemController {
         model.addAttribute("item", service.findById(Long.valueOf(id)));
         model.addAttribute("subCategories", subCategoryService.findAll());
         return "redirect:/items/update/{id}";
+    }
+
+    @GetMapping("/{id}/readimage")
+    public void renderImageFromDB(@PathVariable String id, HttpServletResponse response) throws IOException {
+        Item itemPersisted = service.findById(Long.valueOf(id));
+
+        if (itemPersisted.getImage() != null) {
+            byte[] byteArray = new byte[itemPersisted.getImage().length];
+            int i = 0;
+
+            for (Byte wrappedByte : itemPersisted.getImage()) {
+                byteArray[i++] = wrappedByte;
+            }
+            response.setContentType("image/jpeg");
+            InputStream is = new ByteArrayInputStream(byteArray);
+            IOUtils.copy(is, response.getOutputStream());
+        }
     }
 
 }    
