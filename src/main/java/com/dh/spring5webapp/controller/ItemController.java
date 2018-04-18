@@ -54,4 +54,11 @@ public class ItemController {
         model.addAttribute("item", itemPersisted);
         return "redirect:/items/" + itemPersisted.getId();
     }
+
+    @RequestMapping("/update/{id}")
+    public String updateItem(Model model, @PathVariable String id) {
+        model.addAttribute("item", service.findById(Long.valueOf(id)));
+        model.addAttribute("subCategories", subCategoryService.findAll());
+        return "itemForm";
+    }
 }    

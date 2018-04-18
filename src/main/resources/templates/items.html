@@ -5,18 +5,24 @@
     <title>Items</title>
 </head>
 <body>
+<h1>Item List</h1>
 <table>
     <tr>
         <th>ID</th>
-        <th>Name</th>
         <th>Code</th>
+        <th>Name</th>
         <th>View</th>
+        <th>Update</th>
+        <th>Delete</th>
     </tr>
+    <!--/*@thymesVar id="item" type="com.dh.spring5webapp.model.Item"*/-->
     <tr th:each="item:${items}">
         <td th:text="${item.id}">123</td>
+        <td th:text="${item.code}">Jhon</td>
         <td th:text="${item.name}">Jhon</td>
-        <td th:text="${item.code}">Doe</td>
         <td><a href="#" th:href="@{'/items/'+${item.id}}">View</a></td>
+        <td><a href="#" th:href="@{'/items/update/'+${item.id}}">Edit</a></td>
+        <td><a href="#" th:href="@{'/items/delete/'+${item.id}}">Delete</a></td>
     </tr>
 </table>
 
