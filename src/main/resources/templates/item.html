@@ -21,6 +21,10 @@
         <td th:text="${item.subCategory.name}">Jhon</td>
     </tr>
 </table>
+<div>
+    <label>Image</label>
+    <a href="#" th:href="@{'/items/'+${item.id}+'/image'}">Image</a>
+</div>
 </body>
 
 </html>

@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
@@ -66,6 +68,22 @@ public class ItemController {
     public String deleteItem(Model model, @PathVariable String id) {
         service.deleteById(Long.valueOf(id));
         return "redirect:/items/";
+    }
+
+    @RequestMapping(value = "/{id}/image")
+    public String showUploadItemImageForm(Model model, @PathVariable String id) {
+        Item itemPersisted = service.findById(Long.valueOf(id));
+        model.addAttribute("item", itemPersisted);
+        return "uploadItemImageForm";
+    }
+
+    @PostMapping("/{id}/image")
+    public String potImage(Model model, @PathVariable String id, @RequestParam("imagefile") MultipartFile file) {
+        service.saveImage(Long.valueOf(id), file);
+
+        model.addAttribute("item", service.findById(Long.valueOf(id)));
+        model.addAttribute("subCategories", subCategoryService.findAll());
+        return "redirect:/items/update/{id}";
     }
 
 }    
