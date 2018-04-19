@@ -70,7 +70,7 @@ public class ItemController {
     }
 
     @DELETE
-    @Path("/delete/{id}")
+    @Path("/{id}")
     public Response deleteItem(@PathParam("id") String id) {
         service.deleteById(Long.valueOf(id));
         Response.ResponseBuilder responseBuilder = Response.ok();

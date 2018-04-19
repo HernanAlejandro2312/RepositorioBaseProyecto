@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Path("/employees")
-@Produces("application/json")
+@Produces(MediaType.APPLICATION_JSON)
 @Controller
 public class EmployeeController {
     private EmployeeService service;
@@ -36,21 +36,18 @@ public class EmployeeController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public EmployeeCommand getEmployeeById(@PathParam("id") long id) {
         Employee employee = service.findById(id);
         return new EmployeeCommand(employee);
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     public EmployeeCommand addEmployee(EmployeeCommand employeeCommand) {
         Employee employee = service.save(employeeCommand.toEmployee());
         return new EmployeeCommand(employee);
     }
 
     @PUT
-    @Produces(MediaType.APPLICATION_JSON)
     public EmployeeCommand updateEmployee(EmployeeCommand employeeCommand) {
         Employee employee = service.save(employeeCommand.toEmployee());
         return new EmployeeCommand(employee);
@@ -58,9 +55,10 @@ public class EmployeeController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public void deleteEmployee(@PathParam("id") long id) {
         service.deleteById(id);
-
     }
+    /*
+    https://www.getpostman.com/collections/cb9764af6c5d5bcaa0c9
+    */
 }
