@@ -1,10 +1,7 @@
 
 package com.dh.spring5webapp.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +9,8 @@ import java.util.Set;
 public class Employee extends ModelBase {
     private String firstName;
     private String lastName;
+    @Lob
+    private Byte[] image;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Set<Contract> contracts = new HashSet<>();
@@ -38,5 +37,13 @@ public class Employee extends ModelBase {
 
     public void setContracts(Set<Contract> contracts) {
         this.contracts = contracts;
+    }
+
+    public Byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(Byte[] image) {
+        this.image = image;
     }
 }

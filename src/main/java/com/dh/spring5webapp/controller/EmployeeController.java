@@ -7,11 +7,14 @@ package com.dh.spring5webapp.controller;
 import com.dh.spring5webapp.command.EmployeeCommand;
 import com.dh.spring5webapp.model.Employee;
 import com.dh.spring5webapp.services.EmployeeService;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +61,18 @@ public class EmployeeController {
     public void deleteEmployee(@PathParam("id") long id) {
         service.deleteById(id);
     }
+
+    @Path("/{id}/image")
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response uploadFile(@PathParam("id") String id,
+                               @FormDataParam("file") InputStream file,
+                               @FormDataParam("file") FormDataContentDisposition fileDisposition) {
+        service.saveImage(Long.valueOf(id), file);
+        return Response.ok("Data uploaded successfully !!").build();
+    }
+
     /*
     https://www.getpostman.com/collections/cb9764af6c5d5bcaa0c9
     */

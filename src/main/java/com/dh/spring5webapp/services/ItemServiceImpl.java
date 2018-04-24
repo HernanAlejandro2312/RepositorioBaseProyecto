@@ -10,9 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 public class ItemServiceImpl extends GenericServiceImpl<Item> implements ItemService {
@@ -30,12 +31,13 @@ public class ItemServiceImpl extends GenericServiceImpl<Item> implements ItemSer
     }
 
     @Override
-    public void saveImage(Long id, MultipartFile file) {
+    public void saveImage(Long id, InputStream file) {
         Item itemPersisted = findById(id);
         try {
-            Byte[] bytes = new Byte[file.getBytes().length];
+            byte[] fileBytes = StreamUtils.copyToByteArray(file);
+            Byte[] bytes = new Byte[fileBytes.length];
             int i = 0;
-            for (Byte aByte : file.getBytes()) {
+            for (Byte aByte : fileBytes) {
                 bytes[i++] = aByte;
             }
             itemPersisted.setImage(bytes);

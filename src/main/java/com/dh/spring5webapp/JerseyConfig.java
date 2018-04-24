@@ -1,6 +1,7 @@
 package com.dh.spring5webapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class JerseyConfig extends ResourceConfig {
         packages("com.dh.spring5webapp.controller");
         // register jackson for json
         register(new ObjectMapperContextResolver(objectMapper));
+        register(MultiPartFeature.class);
     }
 
     @Provider

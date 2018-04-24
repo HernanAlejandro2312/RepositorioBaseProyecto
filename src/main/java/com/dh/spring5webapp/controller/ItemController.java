@@ -8,12 +8,16 @@ import com.dh.spring5webapp.command.ItemCommand;
 import com.dh.spring5webapp.model.Item;
 import com.dh.spring5webapp.services.ItemService;
 import com.dh.spring5webapp.services.SubCategoryService;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,18 +82,36 @@ public class ItemController {
         return responseBuilder.build();
     }
 
-/*
-    @POST
+    @OPTIONS
+    public Response prefligth() {
+        Response.ResponseBuilder responseBuilder = Response.ok();
+        addCorsHeader(responseBuilder);
+        responseBuilder.allow("OPTIONS").build();
+        return responseBuilder.build();
+    }
+
+
+    /*@POST
     @Path("/{id}/image")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response potImage(@PathParam("id") String id, @RequestParam("imagefile") MultipartFile file) {
+    public Response potImage(@PathParam("id") String id, @PathParam("imagefile") MultipartFile file) {
         service.saveImage(Long.valueOf(id), file);
 
         model.addAttribute("item", service.findById(Long.valueOf(id)));
         model.addAttribute("subCategories", subCategoryService.findAll());
         return "redirect:/items/update/{id}";
+    }*/
+
+    @Path("/{id}/image")
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response uploadFile(@PathParam("id") String id,
+                               @FormDataParam("file") InputStream file,
+                               @FormDataParam("file") FormDataContentDisposition fileDisposition) {
+        service.saveImage(Long.valueOf(id), file);
+        return Response.ok("Data uploaded successfully !!").build();
     }
-*/
 
 /*
     @GetMapping("/{id}/readimage")

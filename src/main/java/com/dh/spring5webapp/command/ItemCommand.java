@@ -4,6 +4,7 @@
 package com.dh.spring5webapp.command;
 
 import com.dh.spring5webapp.model.Item;
+import org.apache.tomcat.util.codec.binary.Base64;
 
 public class ItemCommand {
 
@@ -26,7 +27,14 @@ public class ItemCommand {
         this.setId(item.getId());
         this.setName(item.getName());
         this.setLabel(item.getName());
-        this.setImage("/assets/images/glasses.jpg");
+        if (item.getImage() != null) {
+            byte[] bytes = new byte[item.getImage().length];
+            for (int i = 0; i < item.getImage().length; i++) {
+                bytes[i] = item.getImage()[i];
+            }
+            String imageStr = Base64.encodeBase64String(bytes);
+            this.setImage(imageStr);
+        }
         this.setPrice("5");
     }
 

@@ -6,6 +6,7 @@ package com.dh.spring5webapp.command;
 import com.dh.spring5webapp.model.Contract;
 import com.dh.spring5webapp.model.Employee;
 import com.dh.spring5webapp.model.ModelBase;
+import org.apache.tomcat.util.codec.binary.Base64;
 
 public class EmployeeCommand extends ModelBase {
 
@@ -17,22 +18,6 @@ public class EmployeeCommand extends ModelBase {
     private String jobCode;
     private Boolean featured;
     private String jobDescription;
-
-    public EmployeeCommand() {
-    }
-
-    public EmployeeCommand(String firstName, String lastName, String name, String image, String jobPosition,
-                           String jobCode, Boolean featured, String jobDescription) {
-
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.name = name;
-        this.image = image;
-        this.jobPosition = jobPosition;
-        this.jobCode = jobCode;
-        this.featured = featured;
-        this.jobDescription = jobDescription;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -62,12 +47,28 @@ public class EmployeeCommand extends ModelBase {
             jobCode = contract.getPosition().getName();
         }
         featured = true;
-        image = "/assets/images/valentin.jpg"; // todo arreglo de bits
+        setImageBase64(employee);
         jobDescription = "Descripcion de job";
+    }
+
+    private void setImageBase64(Employee employee) {
+        if (employee.getImage() != null) {
+            byte[] bytes = new byte[employee.getImage().length];
+            for (int i = 0; i < employee.getImage().length; i++) {
+                bytes[i] = employee.getImage()[i];
+            }
+            String imageStr = Base64.encodeBase64String(bytes);
+            this.setImage(imageStr);
+
+        }
     }
 
     public String getName() {
         return getFirstName() + " " + getLastName();
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getImage() {
