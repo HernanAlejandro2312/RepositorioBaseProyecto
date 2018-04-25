@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,12 +33,7 @@ public class ItemServiceImpl extends GenericServiceImpl<Item> implements ItemSer
     public void saveImage(Long id, InputStream file) {
         Item itemPersisted = findById(id);
         try {
-            byte[] fileBytes = StreamUtils.copyToByteArray(file);
-            Byte[] bytes = new Byte[fileBytes.length];
-            int i = 0;
-            for (Byte aByte : fileBytes) {
-                bytes[i++] = aByte;
-            }
+            Byte[] bytes = ImageUtils.inputStreamToByteArray(file);
             itemPersisted.setImage(bytes);
             getRepository().save(itemPersisted);
         } catch (IOException e) {

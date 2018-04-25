@@ -90,18 +90,6 @@ public class ItemController {
         return responseBuilder.build();
     }
 
-
-    /*@POST
-    @Path("/{id}/image")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response potImage(@PathParam("id") String id, @PathParam("imagefile") MultipartFile file) {
-        service.saveImage(Long.valueOf(id), file);
-
-        model.addAttribute("item", service.findById(Long.valueOf(id)));
-        model.addAttribute("subCategories", subCategoryService.findAll());
-        return "redirect:/items/update/{id}";
-    }*/
-
     @Path("/{id}/image")
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -112,25 +100,6 @@ public class ItemController {
         service.saveImage(Long.valueOf(id), file);
         return Response.ok("Data uploaded successfully !!").build();
     }
-
-/*
-    @GetMapping("/{id}/readimage")
-    public void renderImageFromDB(@PathVariable String id, HttpServletResponse response) throws IOException {
-        Item itemPersisted = service.findById(Long.valueOf(id));
-
-        if (itemPersisted.getImage() != null) {
-            byte[] byteArray = new byte[itemPersisted.getImage().length];
-            int i = 0;
-
-            for (Byte wrappedByte : itemPersisted.getImage()) {
-                byteArray[i++] = wrappedByte;
-            }
-            response.setContentType("image/jpeg");
-            InputStream is = new ByteArrayInputStream(byteArray);
-            IOUtils.copy(is, response.getOutputStream());
-        }
-    }
-*/
 
     private void addCorsHeader(Response.ResponseBuilder responseBuilder) {
         responseBuilder.header("Access-Control-Allow-Origin", "*")
