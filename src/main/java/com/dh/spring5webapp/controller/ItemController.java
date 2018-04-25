@@ -50,7 +50,7 @@ public class ItemController {
     @Path("/{id}")
     public Response getItemsById(@PathParam("id") @NotNull Long id) {
         Item item = service.findById(id);
-        Response.ResponseBuilder responseBuilder = Response.ok(item);
+        Response.ResponseBuilder responseBuilder = Response.ok(new ItemCommand(item));
         addCorsHeader(responseBuilder);
         return responseBuilder.build();
     }
@@ -60,7 +60,7 @@ public class ItemController {
         Item model = item.toDomain();
         model.setSubCategory(subCategoryService.findById(item.getSubCategoryId()));
         Item itemPersisted = service.save(model);
-        Response.ResponseBuilder responseBuilder = Response.ok(itemPersisted);
+        Response.ResponseBuilder responseBuilder = Response.ok(new ItemCommand(itemPersisted));
         addCorsHeader(responseBuilder);
         return responseBuilder.build();
     }
@@ -68,7 +68,7 @@ public class ItemController {
     @PUT
     public Response updateItem(Item item) {
         Item itemPersisted = service.save(item);
-        Response.ResponseBuilder responseBuilder = Response.ok(itemPersisted);
+        Response.ResponseBuilder responseBuilder = Response.ok(new ItemCommand(itemPersisted));
         addCorsHeader(responseBuilder);
         return responseBuilder.build();
     }
