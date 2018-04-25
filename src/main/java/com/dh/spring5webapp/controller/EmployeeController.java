@@ -10,6 +10,7 @@ import com.dh.spring5webapp.services.EmployeeService;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,6 +22,7 @@ import java.util.List;
 @Path("/employees")
 @Produces(MediaType.APPLICATION_JSON)
 @Controller
+@CrossOrigin
 public class EmployeeController {
     private EmployeeService service;
 
@@ -34,7 +36,9 @@ public class EmployeeController {
         service.findAll().forEach(employee -> {
             employeeList.add(new EmployeeCommand(employee));
         });
-        return Response.ok(employeeList).build();
+        Response.ResponseBuilder responseBuilder = Response.ok(employeeList);
+        addCorsHeader(responseBuilder);
+        return responseBuilder.build();
     }
 
     @GET
@@ -42,6 +46,14 @@ public class EmployeeController {
     public EmployeeCommand getEmployeeById(@PathParam("id") long id) {
         Employee employee = service.findById(id);
         return new EmployeeCommand(employee);
+    }
+
+    @OPTIONS
+    public Response prefligth() {
+        Response.ResponseBuilder responseBuilder = Response.ok();
+        addCorsHeader(responseBuilder);
+        responseBuilder.allow("OPTIONS").build();
+        return responseBuilder.build();
     }
 
     @POST
@@ -71,6 +83,14 @@ public class EmployeeController {
                                @FormDataParam("file") FormDataContentDisposition fileDisposition) {
         service.saveImage(Long.valueOf(id), file);
         return Response.ok("Data uploaded successfully !!").build();
+    }
+
+    private void addCorsHeader(Response.ResponseBuilder responseBuilder) {
+        responseBuilder.header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Access-Control-Allow-Headers",
+                        "Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Origin, Accept, Authorization, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     }
 
     /*
