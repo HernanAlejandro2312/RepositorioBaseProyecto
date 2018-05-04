@@ -36,24 +36,19 @@ public class EmployeeController {
         service.findAll().forEach(employee -> {
             employeeList.add(new EmployeeCommand(employee));
         });
-        Response.ResponseBuilder responseBuilder = Response.ok(employeeList);
-        addCorsHeader(responseBuilder);
-        return responseBuilder.build();
+        return Response.ok(employeeList).build();
     }
 
     @GET
     @Path("/{id}")
-    public EmployeeCommand getEmployeeById(@PathParam("id") long id) {
+    public Response getEmployeeById(@PathParam("id") long id) {
         Employee employee = service.findById(id);
-        return new EmployeeCommand(employee);
+        return Response.ok(new EmployeeCommand(employee)).build();
     }
 
     @OPTIONS
     public Response prefligth() {
-        Response.ResponseBuilder responseBuilder = Response.ok();
-        addCorsHeader(responseBuilder);
-        responseBuilder.allow("OPTIONS").build();
-        return responseBuilder.build();
+        return Response.ok().build();
     }
 
     @POST
@@ -83,14 +78,6 @@ public class EmployeeController {
                                @FormDataParam("file") FormDataContentDisposition fileDisposition) {
         service.saveImage(Long.valueOf(id), file);
         return Response.ok("Data uploaded successfully !!").build();
-    }
-
-    private void addCorsHeader(Response.ResponseBuilder responseBuilder) {
-        responseBuilder.header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Credentials", "true")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Access-Control-Allow-Headers",
-                        "Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Origin, Accept, Authorization, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     }
 
     /*

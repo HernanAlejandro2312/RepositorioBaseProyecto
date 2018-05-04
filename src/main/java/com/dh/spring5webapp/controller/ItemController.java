@@ -41,18 +41,14 @@ public class ItemController {
             ItemCommand itemCommand = new ItemCommand(item);
             items.add(itemCommand);
         });
-        Response.ResponseBuilder responseBuilder = Response.ok(items);
-        addCorsHeader(responseBuilder);
-        return responseBuilder.build();
+        return Response.ok(items).build();
     }
 
     @GET
     @Path("/{id}")
     public Response getItemsById(@PathParam("id") @NotNull Long id) {
         Item item = service.findById(id);
-        Response.ResponseBuilder responseBuilder = Response.ok(new ItemCommand(item));
-        addCorsHeader(responseBuilder);
-        return responseBuilder.build();
+        return Response.ok(new ItemCommand(item)).build();
     }
 
     @POST
@@ -60,34 +56,25 @@ public class ItemController {
         Item model = item.toDomain();
         model.setSubCategory(subCategoryService.findById(item.getSubCategoryId()));
         Item itemPersisted = service.save(model);
-        Response.ResponseBuilder responseBuilder = Response.ok(new ItemCommand(itemPersisted));
-        addCorsHeader(responseBuilder);
-        return responseBuilder.build();
+        return Response.ok(new ItemCommand(itemPersisted)).build();
     }
 
     @PUT
     public Response updateItem(Item item) {
         Item itemPersisted = service.save(item);
-        Response.ResponseBuilder responseBuilder = Response.ok(new ItemCommand(itemPersisted));
-        addCorsHeader(responseBuilder);
-        return responseBuilder.build();
+        return Response.ok(new ItemCommand(itemPersisted)).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteItem(@PathParam("id") String id) {
         service.deleteById(Long.valueOf(id));
-        Response.ResponseBuilder responseBuilder = Response.ok();
-        addCorsHeader(responseBuilder);
-        return responseBuilder.build();
+        return Response.ok().build();
     }
 
     @OPTIONS
     public Response prefligth() {
-        Response.ResponseBuilder responseBuilder = Response.ok();
-        addCorsHeader(responseBuilder);
-        responseBuilder.allow("OPTIONS").build();
-        return responseBuilder.build();
+        return Response.ok().build();
     }
 
     @Path("/{id}/image")
@@ -100,12 +87,4 @@ public class ItemController {
         service.saveImage(Long.valueOf(id), file);
         return Response.ok("Data uploaded successfully !!").build();
     }
-
-    private void addCorsHeader(Response.ResponseBuilder responseBuilder) {
-        responseBuilder.header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Credentials", "true")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Access-Control-Allow-Headers",
-                        "Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Origin, Accept, Authorization, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-    }
-}    
+}
